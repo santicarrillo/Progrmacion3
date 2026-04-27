@@ -70,6 +70,8 @@ public class Dfs<T> {
             }
         }
         caminoMasLargo.remove(caminoActual.size()-1);
+
+        return caminoMasLargo;
     }
 
 
