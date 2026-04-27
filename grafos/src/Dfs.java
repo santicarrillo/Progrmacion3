@@ -21,66 +21,57 @@ public class Dfs<T> {
       Iterator<Integer> vertices2= grafo.obtenerVertices();
       while(vertices2.hasNext()){
           vertices2.next();
-          if (color.get(vertices2.next()).equals("BLANCO")){
-              dfsrec(grafo,vertices2.next(),list);
+          if (color.get(vertices.next()).equals("BLANCO")){
+              dfsrec(grafo,vertices.next(),list);
           }
       }
         return list;
     }
     private void dfsrec(Grafo<T> grafo,int v,ArrayList<Integer> list){
-        color.put(v,"Amarrillo");
+        color.put(v,"AMARILLO");
         list.add(v);
         Iterator<Integer> adyacente=  grafo.obtenerAdyacentes(v);
         while(adyacente.hasNext()){
             int ady=adyacente.next();
-            if (color.get(ady).equals("Amarrillo")){
+            if (color.get(ady).equals("BLANCO")){
                 dfsrec(grafo,ady,list);
+                
+            } else if (color.containsKey("AMARILLO")) {
+                System.out.println("Hay ciclo");
             }
         }
         color.put(v,"negro");
     }
+    public ArrayList<Integer> caminoMasLargo(Grafo<T> grafo,int i, int j) {
+        ArrayList<Integer> caminoMasLargo = new ArrayList<>();
+        ArrayList<Integer>  caminoActual = new ArrayList<>();
 
-    public boolean tieneCiclo(Grafo<T> grafo) {
-        color = new HashMap<>();
+        caminoRecto(grafo,i,j,caminoActual,caminoMasLargo);
 
-        // inicializo todos en BLANCO
-        Iterator<Integer> vertices = grafo.obtenerVertices();
-        while (vertices.hasNext()) {
-            color.put(vertices.next(), "BLANCO");
-        }
-
-        // recorro vértices y llamo a tieneCicloVisit
-        Iterator<Integer> vertices2 = grafo.obtenerVertices();
-        while (vertices2.hasNext()) {
-            int v = vertices2.next();
-            if (color.get(v).equals("BLANCO")) {
-                if (tieneCicloVisit(grafo, v)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return caminoMasLargo;
     }
 
-    private boolean tieneCicloVisit(Grafo<T> grafo, int v) {
-        color.put(v, "AMARILLO");
 
-        Iterator<Integer> adyacentes = grafo.obtenerAdyacentes(v);
-        while (adyacentes.hasNext()) {
-            int ady = adyacentes.next();
-            if (color.get(ady).equals("AMARILLO")) {
-                return true; // encontramos un ciclo!
+    private ArrayList<Integer>caminoRecto(Grafo<T> grafo, int actual ,int j,
+                                          ArrayList<Integer> caminoActual,
+                                          ArrayList<Integer> caminoMasLargo) {
+        caminoActual.add(actual);
+
+        if (actual==j){
+            if (caminoMasLargo.size()<caminoActual.size()){
+                caminoMasLargo.clear();
+                caminoMasLargo.addAll(caminoActual);
             }
-            if (color.get(ady).equals("BLANCO")) {
-                if (tieneCicloVisit(grafo, ady)) {
-                    return true;
-                }
+        }else {
+            // SIGUE BUSCANDO ADYACENTE
+            Iterator<Integer> adyacentes = grafo.obtenerAdyacentes(actual);
+            while (adyacentes.hasNext()) {
+                caminoRecto(grafo,adyacentes.next(),j,caminoActual,caminoMasLargo);
             }
         }
-
-        color.put(v, "NEGRO");
-        return false;
+        caminoMasLargo.remove(caminoActual.size()-1);
     }
+
 
 }
 
