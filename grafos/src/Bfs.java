@@ -8,6 +8,7 @@ public class Bfs<T> {
         ArrayList<Integer> resultado = new ArrayList<>();
         Queue<Integer> cola = new LinkedList<>();
         visito = new HashMap<>();
+
         visito.put(v, "visito");
         cola.add(v);
         while (!cola.isEmpty()) {

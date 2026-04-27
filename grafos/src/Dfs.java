@@ -40,7 +40,47 @@ public class Dfs<T> {
         color.put(v,"negro");
     }
 
+    public boolean tieneCiclo(Grafo<T> grafo) {
+        color = new HashMap<>();
 
+        // inicializo todos en BLANCO
+        Iterator<Integer> vertices = grafo.obtenerVertices();
+        while (vertices.hasNext()) {
+            color.put(vertices.next(), "BLANCO");
+        }
+
+        // recorro vértices y llamo a tieneCicloVisit
+        Iterator<Integer> vertices2 = grafo.obtenerVertices();
+        while (vertices2.hasNext()) {
+            int v = vertices2.next();
+            if (color.get(v).equals("BLANCO")) {
+                if (tieneCicloVisit(grafo, v)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean tieneCicloVisit(Grafo<T> grafo, int v) {
+        color.put(v, "AMARILLO");
+
+        Iterator<Integer> adyacentes = grafo.obtenerAdyacentes(v);
+        while (adyacentes.hasNext()) {
+            int ady = adyacentes.next();
+            if (color.get(ady).equals("AMARILLO")) {
+                return true; // encontramos un ciclo!
+            }
+            if (color.get(ady).equals("BLANCO")) {
+                if (tieneCicloVisit(grafo, ady)) {
+                    return true;
+                }
+            }
+        }
+
+        color.put(v, "NEGRO");
+        return false;
+    }
 
 }
 
