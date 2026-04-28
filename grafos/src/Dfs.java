@@ -74,6 +74,42 @@ public class Dfs<T> {
         return caminoMasLargo;
     }
 
+    public List<List<Integer>> buscarCaminosEvitandoTramo(int origen, int destino, int ciudadA, int ciudadB) {
+        List<List<Integer>> todosLosCaminos = new ArrayList<>();
+        List<Integer> caminoActual = new ArrayList<>();
+        Set<Integer> visitados = new HashSet<>();
 
+        // Pasamos ciudadA y ciudadB como los extremos del tramo prohibido
+        dfs(origen, destino, ciudadA, ciudadB, visitados, caminoActual, todosLosCaminos);
+
+        return todosLosCaminos;
+    }
+
+    private void dfs(int actual, int destino, int prohibida1, int prohibida2,
+                     Set<Integer> visitados, List<Integer> caminoActual,
+                     List<List<Integer>> todosLosCaminos) {
+
+        visitados.add(actual);
+        caminoActual.add(actual);
+
+        if (actual == destino) {
+            todosLosCaminos.add(new ArrayList<>(caminoActual));
+        } else {
+            for (Integer vecino : this.grafo.obtenerAdyacentes(actual)) {
+
+                // Verificamos si el movimiento actual representa el tramo cortado
+                boolean esTramoCortado = (actual == prohibida1 && vecino == prohibida2) ||
+                        (actual == prohibida2 && vecino == prohibida1);
+
+                if (!visitados.contains(vecino) && !esTramoCortado) {
+                    dfs(vecino, destino, prohibida1, prohibida2, visitados, caminoActual, todosLosCaminos);
+                }
+            }
+        }
+
+        // Backtracking
+        caminoActual.remove(caminoActual.size() - 1);
+        visitados.remove(actual);
+    }
 }
 
