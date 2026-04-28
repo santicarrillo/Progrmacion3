@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 import java.util.stream.Gatherer;
 
 public class Dfs<T> {
@@ -74,40 +72,44 @@ public class Dfs<T> {
         return caminoMasLargo;
     }
 
-    public List<List<Integer>> buscarCaminosEvitandoTramo(int origen, int destino, int ciudadA, int ciudadB) {
+    public List<List<Integer>> buscarCaminosEvitandoTramo(Grafo<T>grafo,int origen, int destino, int ciudadA, int ciudadB) {
         List<List<Integer>> todosLosCaminos = new ArrayList<>();
         List<Integer> caminoActual = new ArrayList<>();
         Set<Integer> visitados = new HashSet<>();
 
         // Pasamos ciudadA y ciudadB como los extremos del tramo prohibido
-        dfs(origen, destino, ciudadA, ciudadB, visitados, caminoActual, todosLosCaminos);
+        dfs(grafo,origen, destino, ciudadA, ciudadB, visitados, caminoActual, todosLosCaminos);
 
         return todosLosCaminos;
     }
 
-    private void dfs(int actual, int destino, int prohibida1, int prohibida2,
+    private void dfs(Grafo<?> grafo, int actual, int destino, int p1, int p2,
                      Set<Integer> visitados, List<Integer> caminoActual,
-                     List<List<Integer>> todosLosCaminos) {
+                     List<List<Integer>> resultados) {
 
+        // 1. PINTAMOS: Marcamos el nodo actual como parte de la ruta
         visitados.add(actual);
         caminoActual.add(actual);
 
+        // 2. BASE: Si llegamos a Tandil (destino), guardamos una copia del camino
         if (actual == destino) {
-            todosLosCaminos.add(new ArrayList<>(caminoActual));
+            resultados.add(new ArrayList<>(caminoActual));
         } else {
-            for (Integer vecino : this.grafo.obtenerAdyacentes(actual)) {
+            // 3. EXPLORACIÓN: Buscamos vecinos
+            Iterator<Integer> adyacentes = (Iterator<Integer>) grafo.obtenerAdyacentes(actual);
+            while (adyacentes.hasNext()) {
+                int vecino = adyacentes.next();
 
-                // Verificamos si el movimiento actual representa el tramo cortado
-                boolean esTramoCortado = (actual == prohibida1 && vecino == prohibida2) ||
-                        (actual == prohibida2 && vecino == prohibida1);
+                // 4. VALIDACIÓN: ¿Está el tramo cortado?
+                boolean tramoObstruido = (actual == p1 && vecino == p2) || (actual == p2 && vecino == p1);
 
-                if (!visitados.contains(vecino) && !esTramoCortado) {
-                    dfs(vecino, destino, prohibida1, prohibida2, visitados, caminoActual, todosLosCaminos);
+                if (!visitados.contains(vecino) && !tramoObstruido) {
+                    dfs(grafo, vecino, destino, p1, p2, visitados, caminoActual, resultados);
                 }
             }
         }
 
-        // Backtracking
+        // 5. DESPINTAMOS (Backtracking): Quitamos el nodo para permitir otras rutas
         caminoActual.remove(caminoActual.size() - 1);
         visitados.remove(actual);
     }
