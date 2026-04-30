@@ -19,6 +19,10 @@
         return verticeOrigen;
     }
 
-    public int getVerticeDestino() {
+    public int getVerticeDestino() { return  verticeDestino
     }
+    public T getEtiqueta() {
+        return etiqueta;
+    }
+
 }
