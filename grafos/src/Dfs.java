@@ -1,7 +1,7 @@
 import java.util.*;
 import java.util.stream.Gatherer;
 
-public class Dfs<T> {
+public class    Dfs<T> {
 
     private HashMap<Integer,String> color;
 
