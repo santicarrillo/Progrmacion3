@@ -178,7 +178,6 @@ private boolean Espar(ArrayList<Integer> cc) {
                     mejorCombinacion.add(new ArrayList<>(lista));
                 }
             }
-            return;
         }
 
         // pruebo asignar la tarea pos a cada procesador
@@ -321,6 +320,61 @@ private boolean Espar(ArrayList<Integer> cc) {
 
         return false;
     }
+
+    //Colocar un entero positivo (menor que un cierto valor entero k dado) en cada casilla de una
+    //pirámide de base B (valor entero dado) de modo que cada número sea igual a la suma de las
+    //casillas sobre las que está apoyado. Los números de todas las casillas deben ser diferentes.
+
+
+    public List<ArrayList<Integer>>ArmarPiramide(int k,int b){
+        int pos=0;
+        List<ArrayList<Integer>>PiramideResultado=new ArrayList<>();
+        ArrayList<ArrayList<Integer>>PiramideActual=new ArrayList<>();
+
+        HashSet<Integer>usado= new HashSet<>();
+        generarBases(k,b,PiramideResultado,usado,PiramideActual,pos);
+
+        return PiramideResultado;
+
+
+
+    }
+
+    private void generarBases(int k,int b,List<ArrayList<Integer>>resultado,HashSet<Integer>usado,ArrayList<ArrayList<Integer>>piramideActual,int pos){
+        /*tengo que hacer una base de tamaño b donde se le puedan agregar numeros menores a la division resultante entre K y B */
+
+
+
+        if((pos==b)){
+            calcularPiramide(piramideActual,b,k,usado,resultado);
+            resultado.addAll(piramideActual);
+        }
+
+        for ( int i=1 ; i<=k/b;i++){
+            if (!usado.contains(i)){
+                piramideActual.add(i);
+                usado.add(i);
+                generarBases(k,b,resultado,usado,piramideActual,pos+1);
+                usado.remove(i);
+                
+            }
+        }
+    }
+
+    private void calcularPiramide(ArrayList<ArrayList<Integer>> piramideActual, int b, int k, HashSet<Integer> usado,
+                                  List<ArrayList<Integer>> resultado) {
+
+        for (int i=0;i<piramideActual.size();i++){
+            
+
+        }
+
+
+    }
+}
+
+
+
 
 }
 
